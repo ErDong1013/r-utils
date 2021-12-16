@@ -1,3 +1,4 @@
 import useMount from './useMount';
+import useAsync from './useAsync';
 
-export { useMount };
+export { useMount, useAsync };

@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "r-hooks",
+  "name": "r-utils",
   "version": "1.0.0",
   "scripts": {
     "start": "dumi dev",

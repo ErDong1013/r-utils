@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 // @ts-ignore
-import { useMount } from 'r-hooks';
+import { useMount } from 'r-utils';
 
 export default () => {
   const [isMount, setIsMount] = useState(false);

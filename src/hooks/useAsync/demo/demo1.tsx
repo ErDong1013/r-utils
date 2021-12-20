@@ -1,4 +1,4 @@
-import { useAsync } from 'r-hooks';
+import { useAsync } from 'r-utils';
 import Mock from 'mockjs';
 import React from 'react';
 

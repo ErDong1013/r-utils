@@ -1,4 +1,4 @@
-import { useAsync } from 'r-utils';
+import { useAsync } from '../index';
 import Mock from 'mockjs';
 import React from 'react';
 
@@ -16,7 +16,7 @@ const getUsername = (): Promise<string> => {
 
 export default () => {
   const [usernameData] = useAsync(getUsername);
-  const { value, error, loading } = usernameData;
+  const { data, error, loading } = usernameData;
 
   console.log('usernameData', usernameData);
 
@@ -26,5 +26,5 @@ export default () => {
   if (loading) {
     return <div>loading...</div>;
   }
-  return <div>Username: {value}</div>;
+  return <div>Username: {data}</div>;
 };

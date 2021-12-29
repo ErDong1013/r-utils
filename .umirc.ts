@@ -2,9 +2,8 @@ import { defineConfig } from 'dumi';
 
 export default defineConfig({
   title: 'r-utils',
-  favicon:
-    'https://user-images.githubusercontent.com/9554297/83762004-a0761b00-a6a9-11ea-83b4-9c8ff721d4b8.png',
-  logo: 'https://user-images.githubusercontent.com/9554297/83762004-a0761b00-a6a9-11ea-83b4-9c8ff721d4b8.png',
+  favicon: 'https://s4.ax1x.com/2021/12/20/Tn4cNQ.png',
+  logo: 'https://s4.ax1x.com/2021/12/20/Tn4cNQ.png',
   outputPath: 'docs-dist',
   base: '/r-utils', // 文档起始路由
   publicPath: '/r-utils/', // 静态资源起始路径

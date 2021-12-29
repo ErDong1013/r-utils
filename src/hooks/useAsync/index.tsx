@@ -1,65 +1,47 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useRequest } from 'ahooks';
+import { Options as Configure } from 'ahooks/es/useRequest/src/types';
 
-export type Service<TData> = (...args: any[]) => Promise<TData>;
+export type AsyncFun<TData, TParams extends any[]> = (...args: TParams) => Promise<TData>;
 
-export type Plugin<TData> = {
-  onSuccess?: (res: TData) => void;
-  onError?: (e: Error) => void;
-  onFinally?: () => void;
-};
+export interface Options<TData, TParams extends any[]> {
+  /** 是否需要手动执行 */
+  manual?: boolean;
+  /** 传递给 asyncFun 的参数 */
+  params?: TParams;
+  /** 设置 loading 变成 true 的延迟时间 */
+  loadingDelay?: number;
+  /** asyncFun 执行前触发 */
+  onBefore?: (params: TParams) => void;
+  /** asyncFun resolve 时触发 */
+  onSuccess?: (data: TData, params: TParams) => void;
+  /** asyncFun reject 时触发 */
+  onError?: (e: Error, params: TParams) => void;
+  /** asyncFun 执行完成时触发 */
+  onFinally?: (params: TParams, data?: TData, e?: Error) => void;
+}
 
-export type Options<TData> = {
-  initValue?: TData | undefined;
-  ask?: boolean;
-};
-
-export default function useAsync<TData, TParams>(
-  asyncFun: Service<TData>,
-  options: Options<TData> = {},
-  plugins: Plugin<TData> = {},
+export function useAsync<TData, TParams extends any[]>(
+  asyncFun: AsyncFun<TData, TParams>,
+  options?: Options<TData, TParams>,
 ) {
-  const { initValue = undefined, ask = true } = options;
+  const configure: Configure<TData, TParams> = { ...options, defaultParams: options?.params };
+  const { data, error, loading, run, runAsync, refresh, refreshAsync, mutate } = useRequest<
+    TData,
+    TParams
+  >(asyncFun, { ...configure });
 
-  const serviceRef = useRef(asyncFun);
-
-  const [value, setValue] = useState<TData | undefined>(initValue);
-  const [loading, setLoading] = useState<boolean | null>(null);
-  const [error, setError] = useState(null);
-
-  const refresh = useCallback(
-    (params: TParams | any) => {
-      return params ? serviceRef.current(...params) : serviceRef.current();
-    },
-    [asyncFun],
-  );
-
-  const refreshAsync = useCallback(
-    (params: TParams | any) => {
-      setLoading(true);
-      params
-        ? refresh(params)
-        : refresh(null)
-            .then((res) => {
-              setValue(res);
-              typeof plugins.onSuccess === 'function' && plugins.onSuccess;
-            })
-            .catch((err) => {
-              setError(err);
-              typeof plugins.onError === 'function' && plugins.onError;
-            })
-            .finally(() => {
-              setLoading(false);
-              typeof plugins.onFinally === 'function' && plugins.onFinally;
-            });
-    },
-    [refresh],
-  );
-
-  useEffect(() => {
-    ask && refreshAsync(null);
-  }, [refreshAsync]);
-
-  const asyncData = { value, loading, error, setValue, refresh, refreshAsync };
+  const asyncData = {
+    data,
+    error,
+    loading,
+    run,
+    runAsync,
+    refresh,
+    refreshAsync,
+    setData: mutate,
+  };
 
   return [asyncData];
 }
+
+export default useAsync;
